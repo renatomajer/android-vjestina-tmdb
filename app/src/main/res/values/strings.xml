@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">Tmdb</string>
+    
+    <string name="whats_popular_section">"What's popular"</string>
+    <string name="streaming_tab">Streaming</string>
+    <string name="on_tv_tab">On TV</string>
+    <string name="for_rent_tab">For Rent</string>
+    <string name="in_theaters_tab">In Theaters</string>
+
+    <string name="free_to_watch_section">Free to Watch</string>
+    <string name="movies_tab">Movies</string>
+    <string name="tv_tab">TV</string>
+
+    <string name="trending_section">Trendidng</string>
+    <string name="today_tab">Today</string>
+    <string name="this_week_tab">This Week</string>
+
+    <string name="favorites_section">Favorites</string>
+
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+
+    <string name="user_score">User Score</string>
+    
+    <string name="overview">Overview</string>
+
+    <string name="top_billed_cast">Top Billed Cast</string>
+    <string name="full_cast_crew">Full Cast &amp; Crew</string>
+
+    <string name="search">Search</string>
 </resources>
