@@ -19,6 +19,5 @@ class ApplicationModule() : Application() {
             modules(movieModule)
         }
     }
-
 }
 

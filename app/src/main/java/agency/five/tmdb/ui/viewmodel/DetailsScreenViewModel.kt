@@ -11,14 +11,10 @@ import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+
 class DetailsScreenViewModel(
     val id: Int //TODO: removed null
 ) : ViewModel(), KoinComponent {
-
-/*    private val movie: Flow<MovieItemViewState> = loadMovie(id)
-    private val personFunctions: Flow<List<PersonFunction>> = loadPersonFunctions(id)
-    private val actors: Flow<List<Actor>> = loadActors(id) //"Top Billed Cast"
-    */
 
     private val movieRepository: MovieRepository by inject()
 
@@ -36,17 +32,14 @@ class DetailsScreenViewModel(
     }
 
     private fun loadMovie(movieId: Int): Flow<MovieItemViewState> {
-        //TODO: load movie with id
         return movieRepository.getMovie(movieId)
     }
 
     private fun loadPersonFunctions(movieId: Int): Flow<List<PersonFunction>> {
-        //TODO: load persons for the movie
-        return movieRepository.getPersonFunctions(movieId)    //TODO: edit
+        return movieRepository.getPersonFunctions(movieId)
     }
 
     private fun loadActors(movieId: Int): Flow<List<Actor>> {
-        //TODO: load movie roles
         return movieRepository.getActors(movieId)
     }
 }

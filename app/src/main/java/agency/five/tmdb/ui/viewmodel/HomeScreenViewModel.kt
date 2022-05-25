@@ -35,17 +35,14 @@ class HomeScreenViewModel() : ViewModel(), KoinComponent {
     }
 
     private fun loadPopularMoviesLists(): Flow<List<List<MovieItemViewState>>> {
-        //TODO: add loading...
         return movieRepository.getPopularMovies()
     }
 
     private fun loadFreeMoviesLists(): Flow<List<List<MovieItemViewState>>> {
-        //TODO: add loading...
         return movieRepository.getFreeMovies()
     }
 
     private fun loadTrendingMoviesLists(): Flow<List<List<MovieItemViewState>>> {
-        //TODO: add loading...
         return movieRepository.getTrendingMovies()
     }
 

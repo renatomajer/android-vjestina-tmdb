@@ -1,5 +1,7 @@
 package agency.five.tmdb
 
+import agency.five.tmdb.ui.components.ActorCardsList
+import agency.five.tmdb.ui.components.MovieDetails
 import agency.five.tmdb.ui.components.MovieItemViewState
 import agency.five.tmdb.ui.theme.Typography
 import agency.five.tmdb.ui.viewmodel.DetailsScreenViewModel
@@ -26,10 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.*
 import org.koin.androidx.compose.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -69,9 +69,8 @@ fun DetailsScreen(
             )
         }
 
-    //TODO: fix the bug
     val item: MovieItemViewState by itemFlowLifecycleAware
-        .collectAsState(initial = MovieItemViewState()) //if no imageResId is set, the app crashes
+        .collectAsState(initial = MovieItemViewState())
 
     val personFunctions: List<PersonFunction> by personFunctionsFlowLifecycleAware
         .collectAsState(initial = emptyList())

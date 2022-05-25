@@ -1,6 +1,6 @@
-package agency.five.tmdb
+package agency.five.tmdb.ui.components
 
-import agency.five.tmdb.ui.components.MovieItemViewState
+import agency.five.tmdb.R
 import agency.five.tmdb.ui.theme.Typography
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -73,7 +73,7 @@ fun MovieDetails(
                 ) {
 
                     CircularProgresBar(
-                        value = (item.vote_average * 10).toInt() ,
+                        value = (item.vote_average * 10).toInt(),
                         modifier = Modifier.padding(end = dimensionResource(id = R.dimen.small_spacing))
                     )
 
@@ -111,7 +111,6 @@ fun MovieDetails(
                                 color = Color.White
                             )
                         }
-
                     }
 
                     Text(
@@ -121,7 +120,6 @@ fun MovieDetails(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
                 StarButton()
             }
         }
@@ -162,6 +160,7 @@ fun StarButton() {
         }
     }
 }
+
 
 @Preview
 @Composable
@@ -221,6 +220,7 @@ fun CircularProgresBar(
         )
     }
 }
+
 
 @Preview
 @Composable

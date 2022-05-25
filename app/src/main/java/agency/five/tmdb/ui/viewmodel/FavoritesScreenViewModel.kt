@@ -25,7 +25,6 @@ class FavoritesScreenViewModel() : ViewModel(), KoinComponent {
     }
 
     private fun loadFavoriteMovies(): Flow<List<MovieItemViewState>> {
-        //TODO: add loading...
         return movieRepository.getFavorites()
     }
 
@@ -34,5 +33,4 @@ class FavoritesScreenViewModel() : ViewModel(), KoinComponent {
             movieRepository.markMovieFavorite(movie, isFavorite)
         }
     }
-
 }

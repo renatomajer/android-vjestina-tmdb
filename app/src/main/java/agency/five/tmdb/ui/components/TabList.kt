@@ -1,6 +1,7 @@
 package agency.five.tmdb.ui.components
 
 
+import agency.five.tmdb.R
 import agency.five.tmdb.navigation.Screens
 import agency.five.tmdb.ui.theme.Typography
 import agency.five.tmdb.ui.viewmodel.HomeScreenViewModel
@@ -17,8 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.debugInspectorInfo
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+
 
 @Composable
 fun TabList(
@@ -62,10 +66,18 @@ fun TabList(
                 }
             }
         }
+        val moviesData = moviesLists[tabIndex]
+        Log.d("debug_log", "${tabData.first()}: $moviesData")
 
-        //Surface() {
-            val moviesData = moviesLists[tabIndex]
-            Log.d("debug_log", "${tabData.first()}: $moviesData")
+        if (moviesData.isEmpty()) {
+            Text(
+                text = stringResource(id = R.string.no_connection),
+                modifier = Modifier.padding(
+                    top = dimensionResource(id = R.dimen.no_connection_text_top_padding),
+                    bottom = dimensionResource(id = R.dimen.no_connection_text_bottom_padding)
+                )
+            )
+        } else {
             MovieList(
                 movieItems = moviesData,
                 onMovieItemClick = { navController.navigate(Screens.DetailsScreen.route + "/${it.id}") },
@@ -76,7 +88,7 @@ fun TabList(
                     )
                 }
             )
-        //}
+        }
     }
 }
 

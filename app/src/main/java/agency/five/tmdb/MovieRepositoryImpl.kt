@@ -1,15 +1,28 @@
 package agency.five.tmdb
 
+import agency.five.tmdb.database.AppDatabase
+import agency.five.tmdb.database.MoviePersonsFunctions
 import agency.five.tmdb.ui.components.MovieItemViewState
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 class MovieRepositoryImpl(
     private val movieApi: MovieApi,
-    private val movieDatabase: MovieDatabase
+    private val movieDatabase: MovieDatabase,
+    private val db: AppDatabase
 ) : MovieRepository {
+
+    private val actorsDao = db.actorsDao()
+    private val movieDao = db.movieDao()
+    private val moviePersonsFunctionsDao = db.moviePersonsFunctionsDao()
+    private val personsFunctionsDao = db.personFunctionsDao()
+
+    private val favorites: Flow<List<MovieItemViewState>> = movieDao.getAll().shareIn(
+        CoroutineScope(Dispatchers.Default),
+        SharingStarted.WhileSubscribed(),
+        replay = 1
+    )
 
     private object RefreshEvent
 
@@ -23,8 +36,20 @@ class MovieRepositoryImpl(
         SharingStarted.WhileSubscribed(),
         replay = 1
     )
+//
+//    private val popularMoviesFlow = refreshMoviesPublisher
+//        .map {
+//            //Log.d("debug_log", "REFRESH EVENT POPULAR")
+//            movieApi.getPopularMovies()
+//        }
+//        .shareIn(
+//            CoroutineScope(Dispatchers.Default),
+//            SharingStarted.WhileSubscribed(),
+//            replay = 1
+//        )
 
-    private val popularMoviesFlow = refreshMoviesPublisher
+
+    private val popularMoviesFlow = favorites
         .map {
             //Log.d("debug_log", "REFRESH EVENT POPULAR")
             movieApi.getPopularMovies()
@@ -40,7 +65,7 @@ class MovieRepositoryImpl(
         popularMoviesInitialFlow,
         popularMoviesFlow
     ).onEach { it ->
-        val favs = movieDatabase.getFavoriteMovies()
+        var favs = movieDao.getAll().first()
         if (favs.isNotEmpty()) {
             it.forEach { list ->
                 list.forEach {
@@ -54,7 +79,6 @@ class MovieRepositoryImpl(
                 }
             }
         }
-        //Log.d("debug_log", "LIST POPULAR: $it")
     }
 
     private val trendingMoviesInitialFlow = flow {
@@ -66,7 +90,18 @@ class MovieRepositoryImpl(
             replay = 1
         )
 
-    private val trendingMoviesFlow = refreshMoviesPublisher
+//    private val trendingMoviesFlow = refreshMoviesPublisher
+//        .map {
+//            //Log.d("debug_log", "REFRESH EVENT TRENDING")
+//            movieApi.getTrendingMovies()
+//        }
+//        .shareIn(
+//            CoroutineScope(Dispatchers.Default),
+//            SharingStarted.WhileSubscribed(),
+//            replay = 1
+//        )
+
+    private val trendingMoviesFlow = favorites
         .map {
             //Log.d("debug_log", "REFRESH EVENT TRENDING")
             movieApi.getTrendingMovies()
@@ -81,7 +116,7 @@ class MovieRepositoryImpl(
         trendingMoviesInitialFlow,
         trendingMoviesFlow
     ).onEach { it ->
-        val favs = movieDatabase.getFavoriteMovies()
+        var favs = movieDao.getAll().first()
         if (favs.isNotEmpty()) {
             it.forEach { list ->
                 list.forEach {
@@ -94,7 +129,6 @@ class MovieRepositoryImpl(
                     it.favorite = isFavorite
                 }
             }
-            //Log.d("debug_log", "LIST TRENDING: $it")
         }
     }
 
@@ -107,7 +141,18 @@ class MovieRepositoryImpl(
             replay = 1
         )
 
-    private val freeMoviesFlow = refreshMoviesPublisher
+//    private val freeMoviesFlow = refreshMoviesPublisher
+//        .map {
+//            //Log.d("debug_log", "REFRESH EVENT FREE")
+//            movieApi.getFreeMovies()
+//        }
+//        .shareIn(
+//            CoroutineScope(Dispatchers.Default),
+//            SharingStarted.WhileSubscribed(),
+//            replay = 1
+//        )
+
+    private val freeMoviesFlow = favorites
         .map {
             //Log.d("debug_log", "REFRESH EVENT FREE")
             movieApi.getFreeMovies()
@@ -122,7 +167,7 @@ class MovieRepositoryImpl(
         freeMoviesInitialFlow,
         freeMoviesFlow
     ).onEach { it ->
-        val favs = movieDatabase.getFavoriteMovies()
+        var favs = movieDao.getAll().first()
         if (favs.isNotEmpty()) {
             it.forEach { list ->
                 list.forEach {
@@ -136,37 +181,92 @@ class MovieRepositoryImpl(
                 }
             }
         }
-        //Log.d("debug_log", "LIST FREE: $it")
     }
 
-    override fun getMovie(movieId: Int): Flow<MovieItemViewState> { //TODO: get from api movie or tv
-        return flow { emit(movieApi.getMovie(movieId)) }
+    override fun getMovie(movieId: Int): Flow<MovieItemViewState> {
+        return flow {
+            var movie = movieApi.getMovie(movieId)
+            if (movie.id == -1) { // if there is no connection movieApi returns a movie with id = -1
+                // find the movie with the given id in the database and emit it
+                movie = movieDao.getAll().first().first { it.id == movieId }
+            }
+            emit(movie)
+        }
     }
 
     override fun getPersonFunctions(movieId: Int): Flow<List<PersonFunction>> {
-        return flow { emit(movieApi.getPersonFunctions(movieId)) }
+        return flow {
+            var personsFunctions = movieApi.getPersonFunctions(movieId)
+
+            if (personsFunctions.isEmpty()) {
+                personsFunctions = moviePersonsFunctionsDao.getMovieWithPersonsFunctions(movieId)
+                    .first().personsFunctions
+            }
+            emit(personsFunctions)
+        }
     }
 
     override fun getActors(movieId: Int): Flow<List<Actor>> {
-        return flow { emit(movieApi.getActors(movieId)) }
+        return flow {
+            var actors = movieApi.getActors(movieId)
+
+            if (actors.isEmpty()) {
+                actors = movieDao.getMovieWithActors(movieId).first().actors
+            }
+
+            emit(actors)
+        }
     }
 
+//    private val favouriteMoviesFlow = refreshMoviesPublisher
+//        .map {
+//            movieDatabase.getFavoriteMovies()
+//        }
+//        .shareIn(
+//            CoroutineScope(Dispatchers.Default),
+//            SharingStarted.WhileSubscribed(),
+//            replay = 1
+//        )
 
-    private val favouriteMoviesFlow = refreshMoviesPublisher
-        .map {
-            movieDatabase.getFavoriteMovies()
-        }
-        .shareIn(
-            CoroutineScope(Dispatchers.Default),
-            SharingStarted.WhileSubscribed(),
-            replay = 1
-        )
-
-    override fun getFavorites(): Flow<List<MovieItemViewState>> = favouriteMoviesFlow
+    //override fun getFavorites(): Flow<List<MovieItemViewState>> = favouriteMoviesFlow
+    override fun getFavorites(): Flow<List<MovieItemViewState>> = favorites
 
     override suspend fun markMovieFavorite(movie: MovieItemViewState, isFavorite: Boolean) {
         movie.favorite = isFavorite
-        movieDatabase.saveIsMovieFavorite(movie, isFavorite)
-        refreshMoviesPublisher.emit(RefreshEvent)
+
+        if (movie.favorite) {
+            movie.runtime = movieApi.getMovie(movie.id).runtime // set movie runtime
+            movieDao.insertMovie(movie)
+
+            val actors = movieApi.getActors(movie.id)
+            actorsDao.insertActors(actors) // Insert actor related to that movie
+
+            val persons = movieApi.getPersonFunctions(movie.id)
+            personsFunctionsDao.insertPersonsFunctions(persons)
+
+            for (person in persons) {
+                moviePersonsFunctionsDao.insertMoviePersonsFunctions(
+                    MoviePersonsFunctions(
+                        movie.id,
+                        person.id
+                    )
+                )
+            }
+
+
+        } else {
+            movieDao.deleteMovie(movie)
+            actorsDao.deleteActors(movie.id)
+
+            moviePersonsFunctionsDao.deleteMoviePersonsFunctions(movie.id)
+
+            if (movieDao.getAll().first().isEmpty()) {
+                // if there is no more movies in favorites, remove all of the remaining data
+                personsFunctionsDao.deleteAll()
+            }
+
+        }
+
+        //refreshMoviesPublisher.emit(RefreshEvent)
     }
 }

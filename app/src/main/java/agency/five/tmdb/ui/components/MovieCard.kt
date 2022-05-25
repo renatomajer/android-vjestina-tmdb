@@ -15,27 +15,37 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import coil.compose.rememberImagePainter
 import kotlinx.serialization.Serializable
 
+
+@Entity
 @Serializable
 data class MovieItemViewState(
-    val id: Int = 0,
-    val title: String = "",
-    val overview: String = "Nothing to show",
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "movie_id")
+    var id: Int = -1,
+    var title: String = "",
+    var overview: String = "Nothing to show",
     var favorite: Boolean = false,
     var release_date: String = "No date available",
     var vote_average: Double = 0.0,
     var original_language: String = "Country unknown",
     var runtime: Int? = 0,   // details
+    @Ignore
     var genres: List<Genre> = mutableListOf(), // details
-    val poster_path: String? = ""
+    var poster_path: String? = ""
 )
+
 
 @Serializable
 data class Genre(
-    val id: Int,
-    val name: String
+    var id: Int,
+    var name: String
 )
 
 

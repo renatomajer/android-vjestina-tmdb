@@ -1,14 +1,10 @@
 package agency.five.tmdb
 
-import agency.five.tmdb.navigation.Navigation
 import agency.five.tmdb.navigation.Screens
 import agency.five.tmdb.ui.components.MovieCard
 import agency.five.tmdb.ui.components.MovieItemViewState
 import agency.five.tmdb.ui.theme.Typography
 import agency.five.tmdb.ui.viewmodel.FavoritesScreenViewModel
-import android.content.ContentProvider
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -25,16 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.isActive
 import org.koin.androidx.compose.viewModel
-import kotlin.coroutines.CoroutineContext
 
 
 @OptIn(ExperimentalFoundationApi::class)

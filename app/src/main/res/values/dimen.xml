@@ -25,4 +25,7 @@
 
     <dimen name="circular_progress_bar">42dp</dimen>
     <dimen name="circular_progress_bar_stroke_width">3dp</dimen>
+
+    <dimen name="no_connection_text_top_padding">20dp</dimen>
+    <dimen name="no_connection_text_bottom_padding">50dp</dimen>
 </resources>

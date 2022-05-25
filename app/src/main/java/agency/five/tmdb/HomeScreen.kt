@@ -1,6 +1,7 @@
 package agency.five.tmdb
 
 import agency.five.tmdb.ui.components.MovieItemViewState
+import agency.five.tmdb.ui.components.SearchBar
 import agency.five.tmdb.ui.components.TabList
 import agency.five.tmdb.ui.theme.Typography
 import agency.five.tmdb.ui.viewmodel.HomeScreenViewModel
@@ -12,14 +13,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import org.koin.androidx.compose.viewModel
 
@@ -83,7 +80,6 @@ fun HomeScreen(
 
     val free: List<List<MovieItemViewState>> by homeScreenViewModel.getFreeMoviesLists()
         .collectAsState(initial = listOf(emptyList(), emptyList()))
-
 
 
     // list of tabs for the "What's popular" section
